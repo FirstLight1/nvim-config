@@ -1,4 +1,7 @@
-local lsp_zero = require('lsp-zero')
+local status_ok, lsp_zero = pcall(require, 'lsp-zero')
+if not status_ok then
+	return
+end
 
 lsp_zero.on_attach(function(client, bufnr)
   local opts = {buffer = bufnr, remap = false}

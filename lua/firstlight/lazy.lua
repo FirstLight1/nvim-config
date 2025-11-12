@@ -11,9 +11,7 @@ require("lazy").setup({
   {
     'rose-pine/neovim',
     name = 'rose-pine',
-    config = function()
-      vim.cmd('colorscheme rose-pine')
-    end
+    priority = 1000,
   },
 
   -- Treesitter
@@ -24,7 +22,11 @@ require("lazy").setup({
   'nvim-treesitter/playground',
 
   -- Navigation and utilities
-  'theprimeagen/harpoon',
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' }
+  },
   'tpope/vim-fugitive',
   'mbbill/undotree',
 
