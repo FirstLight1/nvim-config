@@ -9,11 +9,18 @@ require("lazy").setup({
 
   -- Rose-pine colorscheme
   {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-    priority = 1000,
+      'rose-pine/neovim',
+      name = 'rose-pine',
+      priority = 1000,
   },
 
+  -- Miasma colorscheme
+ -- {
+ --     "xero/miasma.nvim",
+ --     name = 'miasma',
+ --     lazy = false,
+--      priority = 1000,
+ -- },
   -- Treesitter
   {
     'nvim-treesitter/nvim-treesitter',
