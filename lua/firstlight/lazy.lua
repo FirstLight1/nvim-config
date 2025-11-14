@@ -13,7 +13,13 @@ require("lazy").setup({
       name = 'rose-pine',
       priority = 1000,
   },
-
+  {
+      "folke/tokyonight.nvim",
+      lazy = false,
+      name='tokyonight',
+      priority = 1000,
+      opts = {},
+  },
   -- Miasma colorscheme
  -- {
  --     "xero/miasma.nvim",
