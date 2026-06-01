@@ -33,7 +33,13 @@ require("mason-lspconfig").setup({
         end,
     },
 })
-
+vim.lsp.config("basedpyright", {
+  settings = {
+    basedpyright = {
+      typeCheckingMode = "off",
+    },
+  },
+})
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 

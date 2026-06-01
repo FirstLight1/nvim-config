@@ -2,7 +2,7 @@
 function ColorMyPencils(color)
 --	color = color or "rose-pine"
 --	color = color or "miasma"
-	color = color or "tokyonight"
+	color = color or "tokyonight-night"
 
 	local status_ok = pcall(vim.cmd.colorscheme, color)
 	if not status_ok then
