@@ -75,6 +75,37 @@ require("lazy").setup({
                 'rafamadriz/friendly-snippets',
             }
         },
+
+        -- Claude Code
+        {
+            "coder/claudecode.nvim",
+            dependencies = { "folke/snacks.nvim" }, -- for the floating terminal; optional but nicer
+            config = true,
+            keys = {
+                { "<leader>c",  nil,                              desc = "AI/Claude" },
+                { "<leader>cc", "<cmd>ClaudeCode<cr>",            desc = "Toggle Claude" },
+                { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>",       desc = "Focus Claude" },
+                { "<leader>cr", "<cmd>ClaudeCode --resume<cr>",   desc = "Resume Claude" },
+                { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+                { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>",       desc = "Add current buffer" },
+                { "<leader>cs", "<cmd>ClaudeCodeSend<cr>",        mode = "v",                 desc = "Send selection" },
+                {
+                    "<leader>cs",
+                    "<cmd>ClaudeCodeTreeAdd<cr>",
+                    desc = "Add file from tree",
+                    ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
+                },
+                -- Diff management
+                { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+                { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>",   desc = "Deny diff" },
+            },
+        },
+
+        -- Snacks (floating terminal backend for claudecode, etc.)
+        {
+            "folke/snacks.nvim",
+            opts = {},
+        },
     }, {
         -- lazy.nvim configuration options
         ui = {
