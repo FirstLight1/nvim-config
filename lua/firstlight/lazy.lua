@@ -76,6 +76,17 @@ require("lazy").setup({
             }
         },
 
+        -- Supermaven
+         {
+            "supermaven-inc/supermaven-nvim",
+            config = function()
+                require("supermaven-nvim").setup({
+                    disable_inline_completion = true,  -- use cmp instead of ghost text
+                    disable_keymaps = true,            -- let cmp handle <Tab>
+                })
+            end,
+            },
+
         -- Claude Code
         {
             "coder/claudecode.nvim",
@@ -105,6 +116,149 @@ require("lazy").setup({
         {
             "folke/snacks.nvim",
             opts = {},
+        },
+
+        -- Mason tool installer (auto-installs formatters/linters via Mason)
+        {
+            "WhoIsSethDaniel/mason-tool-installer.nvim",
+            dependencies = { "williamboman/mason.nvim" },
+            event = "VeryLazy",
+            opts = {
+                ensure_installed = {
+                    "ruff",       -- Python format + organize imports
+                    "stylua",     -- Lua
+                    "goimports",  -- Go imports
+                    "gofumpt",    -- Go (stricter gofmt)
+                    "prettier",   -- JS/TS/JSON/CSS/HTML
+                },
+            },
+        },
+
+        -- Conform (formatting)
+        {
+            "stevearc/conform.nvim",
+            event = { "BufWritePre" },
+            cmd = { "ConformInfo" },
+            keys = {
+                {
+                    "<leader>f",
+                    function()
+                        require("conform").format({ async = true, lsp_format = "fallback" })
+                    end,
+                    mode = { "n", "v" },
+                    desc = "Format buffer",
+                },
+            },
+            opts = {
+                formatters_by_ft = {
+                    python = { "ruff_organize_imports", "ruff_format" },
+                    lua = { "stylua" },
+                    go = { "goimports", "gofumpt" },
+                    javascript = { "prettier" },
+                    typescript = { "prettier" },
+                    javascriptreact = { "prettier" },
+                    typescriptreact = { "prettier" },
+                    json = { "prettier" },
+                    css = { "prettier" },
+                    html = { "prettier" },
+                },
+                format_on_save = function(bufnr)
+                    -- Allow disabling autoformat per-buffer or globally
+                    if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+                        return
+                    end
+                    return { timeout_ms = 500, lsp_format = "fallback" }
+                end,
+            },
+        },
+
+        -- Lualine (statusline)
+        {
+            "nvim-lualine/lualine.nvim",
+            event = "VeryLazy",
+            dependencies = { "nvim-tree/nvim-web-devicons", "ThePrimeagen/harpoon" },
+            config = function()
+                -- Custom harpoon component: shows marks 1-N, highlighting the
+                -- one matching the current buffer.
+                local function harpoon_component()
+                    local ok, harpoon = pcall(require, "harpoon")
+                    if not ok then
+                        return ""
+                    end
+                    local list = harpoon:list()
+                    local total = list:length()
+                    if total == 0 then
+                        return ""
+                    end
+
+                    local current = vim.api.nvim_buf_get_name(0)
+                    local root = vim.uv.cwd() or vim.loop.cwd()
+                    local parts = {}
+                    for i = 1, total do
+                        local item = list:get(i)
+                        local value = item and item.value or ""
+                        local abs = vim.fs.normalize(root .. "/" .. value)
+                        if vim.fs.normalize(current) == abs then
+                            parts[#parts + 1] = "[" .. i .. "]"
+                        else
+                            parts[#parts + 1] = tostring(i)
+                        end
+                    end
+                    return "󰛢 " .. table.concat(parts, " ")
+                end
+
+                require("lualine").setup({
+                    options = {
+                        theme = "auto",
+                        globalstatus = true,
+                        section_separators = "",
+                        component_separators = "",
+                    },
+                    sections = {
+                        lualine_c = {
+                            "filename",
+                            { harpoon_component, color = { gui = "bold" } },
+                        },
+                    },
+                })
+            end,
+        },
+
+        -- Todo-comments (highlight & search TODO/FIX/HACK/etc.)
+        {
+            "folke/todo-comments.nvim",
+            event = "VeryLazy",
+            dependencies = { "nvim-lua/plenary.nvim" },
+            opts = {},
+            keys = {
+                { "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Find todos" },
+                {
+                    "]t",
+                    function() require("todo-comments").jump_next() end,
+                    desc = "Next todo comment",
+                },
+                {
+                    "[t",
+                    function() require("todo-comments").jump_prev() end,
+                    desc = "Previous todo comment",
+                },
+            },
+        },
+
+        -- Which-key (popup showing available keybindings)
+        {
+            "folke/which-key.nvim",
+            event = "VeryLazy",
+            opts = {},
+            keys = {
+                {
+                    "<leader>?",
+                    function()
+                        require("which-key").show({ global = false })
+                    end,
+                    desc = "Buffer Local Keymaps (which-key)",
+                },
+            },
         },
     }, {
         -- lazy.nvim configuration options
